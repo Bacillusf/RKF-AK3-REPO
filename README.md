@@ -1,7 +1,7 @@
 # RKF-AK3-REPO
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Releases](https://img.shields.io/badge/Releases-查看-blue)](https://github.com/Bacillusf/RKF-AK3-REPO/releases)
+[![Releases](https://img.shields.io/badge/Releases-View-blue)](https://github.com/Bacillusf/RKF-AK3-REPO/releases)
 
 为 ReKernelFlasher 软件提供云端 AnyKernel3 资源。
 
