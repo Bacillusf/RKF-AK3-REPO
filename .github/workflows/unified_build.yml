@@ -584,7 +584,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p release_zips
-          gh run download -R ${{ github.repository }} ${{ github.run_id }} -D release_zips/ || true
+          gh run download -R ${{ github.repository }} ${{ github.run_id }} -D release_zips/ --zip || true
           echo "工件目录结构:"
           find release_zips -type f || true
 
