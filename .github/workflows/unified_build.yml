@@ -119,7 +119,8 @@ jobs:
           wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/lib/ccache-x86-64 -O ccache &&
           sudo cp -f ./ccache /usr/bin/ccache &&
           sudo chmod +x /usr/bin/ccache &&
-          rm -f ./ccache &
+          rm -f ./ccache &&
+          which ccache || { echo "错误: ccache 安装失败!"; exit 1; }
 
           echo "正在克隆 ${{ matrix.key }} 源码仓库..."
           aria2c -s16 -x16 -k1M https://github.com/cctv18/${{ matrix.source_repo }}/archive/refs/heads/${{ matrix.source_branch }}.zip -o common.zip &&
