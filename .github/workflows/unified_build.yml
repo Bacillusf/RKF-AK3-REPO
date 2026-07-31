@@ -116,7 +116,7 @@ jobs:
           sudo apt update &&
           sudo apt-get install -y --no-install-recommends binutils python-is-python3 libssl-dev libelf-dev &
 
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/lib/ccache-x86-64 -O ccache &&
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/lib/ccache-x86-64 -O ccache &&
           sudo cp -f ./ccache /usr/bin/ccache &&
           sudo chmod +x /usr/bin/ccache &&
           rm -f ./ccache &&
@@ -229,7 +229,7 @@ jobs:
             KSU_GIT_TAG=$(curl -sL "https://api.github.com/repos/KernelSU-Next/KernelSU-Next/tags" | grep -o '"name": *"[^"]*"' | head -n 1 | sed 's/"name": "//;s/"//')
             sed -i "s/KSU_VERSION_TAG_FALLBACK := v0.0.1/KSU_VERSION_TAG_FALLBACK := $KSU_GIT_TAG/g" kernel/Kbuild
             cd ../common/drivers/kernelsu
-            wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/other_patch/apk_sign.patch
+            wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/apk_sign.patch
             patch -p2 -N -F 3 < apk_sign.patch || true
           elif [[ "${{ inputs.ksu_type }}" == "ksu" ]]; then
             echo "正在配置原版 KernelSU (tiann/KernelSU)..."
@@ -247,7 +247,7 @@ jobs:
           if [[ "${{ inputs.ksu_type }}" != "none" ]]; then
             echo "正在添加susfs补丁..."
             git clone --depth=1 https://github.com/cctv18/susfs4oki.git susfs4ksu -b oki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}
-            wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/other_patch/69_hide_stuff.patch -O ./common/69_hide_stuff.patch
+            wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/69_hide_stuff.patch -O ./common/69_hide_stuff.patch
             cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch ./common/
             cp ./susfs4ksu/kernel_patches/fs/* ./common/fs/
             cp ./susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
@@ -268,11 +268,11 @@ jobs:
           echo "正在添加lz4 1.10.0 & zstd 1.5.7补丁…"
           cd kernel_workspace
           git clone --depth=1 https://github.com/$GITHUB_REPOSITORY.git -b $GITHUB_REF_NAME $GITHUB_ACTOR
-          cp ./$GITHUB_ACTOR/6.6/6.6-Dependency/zram_patch/001-lz4.patch ./common/
-          cp ./$GITHUB_ACTOR/6.6/6.6-Dependency/zram_patch/lz4armv8.S ./common/lib
-          cp ./$GITHUB_ACTOR/6.6/6.6-Dependency/zram_patch/002-zstd.patch ./common/
+          cp ./$GITHUB_ACTOR/6.6-Dependency/zram_patch/001-lz4.patch ./common/
+          cp ./$GITHUB_ACTOR/6.6-Dependency/zram_patch/lz4armv8.S ./common/lib
+          cp ./$GITHUB_ACTOR/6.6-Dependency/zram_patch/002-zstd.patch ./common/
           if [[ "${{ matrix.mtk }}" == "true" ]]; then
-            cp ./$GITHUB_ACTOR/6.6/6.6-Dependency/zram_patch/001-lz4-clearMake.patch ./common/
+            cp ./$GITHUB_ACTOR/6.6-Dependency/zram_patch/001-lz4-clearMake.patch ./common/
           fi
           cd ./common
           git apply -p1 < 001-lz4.patch || true
@@ -329,7 +329,7 @@ jobs:
           sed -i 's/check_defconfig//' ./common/build.config.gki
           echo "CONFIG_HEADERS_INSTALL=n" >> ./common/arch/arm64/configs/gki_defconfig
           cd common
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/other_patch/cve-2026-43499-rtmutex-6.6.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/cve-2026-43499-rtmutex-6.6.patch
           patch -p1 -F 3 < cve-2026-43499-rtmutex-6.6.patch
 
       - name: 启用网络功能增强优化配置
@@ -359,19 +359,19 @@ jobs:
           echo "CONFIG_IP6_NF_NAT=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_IP6_NF_TARGET_MASQUERADE=y" >> ./common/arch/arm64/configs/gki_defconfig
           cd common
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/other_patch/config.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/config.patch
           patch -p1 -F 3 < config.patch || true
 
       - name: 启用 Droidspaces 容器支持
         run: |
           echo "正在启用 Droidspaces 容器支持..."
           cd kernel_workspace/common
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/droidspaces_patch/fix_sysvipc_kabi_6_7_8.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/droidspaces_patch/fix_sysvipc_kabi_6_7_8.patch
           patch -p1 -F 3 < fix_sysvipc_kabi_6_7_8.patch || true
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/droidspaces_patch/fix_oplus_bsp_midas.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/droidspaces_patch/fix_oplus_bsp_midas.patch
           patch -p1 -F 3 < fix_oplus_bsp_midas.patch || true
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/droidspaces_patch/ntsync_base.patch
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/droidspaces_patch/ntsync_compat_${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/droidspaces_patch/ntsync_base.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/droidspaces_patch/ntsync_compat_${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch
           patch -p1 -F 3 < ntsync_base.patch || true
           patch -p1 -F 3 < ntsync_compat_${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch || true
           echo "CONFIG_PID_NS=y" >> ./arch/arm64/configs/gki_defconfig
@@ -388,7 +388,7 @@ jobs:
           echo "正在启用容器环境扩展支持..."
           echo "CONFIG_BT_HCIVHCI=y" >> ./arch/arm64/configs/gki_defconfig
           echo "CONFIG_STATIC_USERMODEHELPER=n" >> ./arch/arm64/configs/gki_defconfig
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/droidspaces_patch/evdi_drm.patch
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/droidspaces_patch/evdi_drm.patch
           patch -p1 -F 3 < evdi_drm.patch || true
           echo "CONFIG_DRM_LINDROID_EVDI=y" >> ./arch/arm64/configs/gki_defconfig
 
@@ -444,8 +444,8 @@ jobs:
           echo "sloppiness = file_stat_matches,include_file_ctime,include_file_mtime,pch_defines,file_macro,time_macros" >> "$CCACHE_DIR/ccache.conf"
 
           cd kernel_workspace/common
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/lib/libfakestat.so
-          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/lib/libfaketimeMT.so
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/lib/libfakestat.so
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/lib/libfaketimeMT.so
           chmod 777 ./*.so
           export FAKESTAT="2025-05-25 12:00:00"
           export FAKETIME="@2025-05-25 13:00:00"
@@ -527,7 +527,7 @@ jobs:
             *)        KSU_TYPENAME="none"; KSU_SHORT="none" ;;
           esac
 
-          wget https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/$GITHUB_REF_NAME/6.6/6.6-Dependency/zram.zip
+          wget https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/zram.zip
           wget https://github.com/cctv18/KPatch-Next/releases/latest/download/kpn.zip
 
           DISP_VER="6.6.${{ matrix.sub_version }}"
