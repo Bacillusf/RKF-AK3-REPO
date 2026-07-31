@@ -584,16 +584,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p release_zips
-          echo '${{ needs.setup.outputs.include }}' > matrix.json
-          cat matrix.json | jq -r '.[].key' | while read key; do
-            if gh run download ${{ github.run_id }} -n "kernel-${key}" -D release_zips/ 2>/dev/null; then
-              echo "下载成功: kernel-${key}"
-            else
-              echo "跳过(构建可能失败): kernel-${key}"
-            fi
-          done
-          echo "已下载工件:"
-          ls -la release_zips/
+          gh run download ${{ github.run_id }} -D release_zips/ || true
+          echo "已下载工件目录结构:"
+          find release_zips -type f || true
 
       - name: 检查是否有成功构建
         id: check
@@ -603,6 +596,9 @@ jobs:
           echo "zip_count=$ZIP_COUNT" >> $GITHUB_OUTPUT
           if [ "$ZIP_COUNT" -eq 0 ]; then
             echo "没有成功构建的内核，跳过发布"
+          else
+            echo "找到以下内核包:"
+            find release_zips -name 'AK3_*.zip' -type f
           fi
 
       - name: 计算 KSU 名称
@@ -675,4 +671,4 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ env.TAG_HEAD }}-批量构建" \
             --notes-file release_notes.md \
-            release_zips/AK3_*.zip
+            release_zips/kernel-*/AK3_*.zip
