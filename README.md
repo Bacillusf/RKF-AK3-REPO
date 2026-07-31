@@ -19,7 +19,5 @@
 ### 备注
 
 1. 如果您也希望将自己有效的 AnyKernel3 包上传至本仓库供他人使用，欢迎联系我。
-2. 欢迎积极提交 issues 或反馈建议。# RKF-AK3-REPO
-
-为 ReKernelFlasher 软件提供云端 AnyKernel3 资源。
+2. 欢迎积极提交 issues 或反馈建议。。
 
