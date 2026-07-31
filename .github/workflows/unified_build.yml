@@ -671,4 +671,4 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ env.TAG_HEAD }}-批量构建" \
             --notes-file release_notes.md \
-            release_zips/*/AK3_*.zip
+            release_zips/*.zip
