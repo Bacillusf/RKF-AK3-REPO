@@ -568,7 +568,7 @@ jobs:
         with:
           name: kernel-${{ matrix.key }}
           path: ${{ github.workspace }}/kernel_workspace/AK3_*.zip
-          archive: false
+          
 
   release:
     needs: [setup, build]
@@ -584,7 +584,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p release_zips
-          gh run download -R ${{ github.repository }} ${{ github.run_id }} -D release_zips/ --zip || true
+          gh run download -R ${{ github.repository }} ${{ github.run_id }} -D release_zips/ || true
           echo "工件目录结构:"
           find release_zips -type f || true
 
@@ -671,4 +671,4 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ env.TAG_HEAD }}-批量构建" \
             --notes-file release_notes.md \
-            release_zips/*.zip
+            release_zips/*/AK3_*.zip
