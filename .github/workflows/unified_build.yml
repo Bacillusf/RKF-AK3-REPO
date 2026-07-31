@@ -580,11 +580,13 @@ jobs:
       actions: read
     steps:
       - name: 下载全部内核工件
-        uses: actions/download-artifact@v4
-        with:
-          pattern: kernel-*
-          path: release_zips
-          merge-multiple: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p release_zips
+          gh run download -R ${{ github.repository }} ${{ github.run_id }} -D release_zips/ || true
+          echo "工件目录结构:"
+          find release_zips -type f || true
 
       - name: 检查是否有成功构建
         id: check
@@ -669,4 +671,4 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ env.TAG_HEAD }}-批量构建" \
             --notes-file release_notes.md \
-            release_zips/AK3_*.zip
+            release_zips/*/AK3_*.zip
