@@ -1,4 +1,4 @@
-name: 欧加真OKI内核统一批量构建
+name: OORB-6.6
 
 env:
   TZ: Asia/Shanghai
@@ -9,45 +9,112 @@ env:
 on:
   workflow_dispatch:
     inputs:
-      ksu_type:
-        description: 'KernelSU分支'
-        required: true
-        type: choice
-        default: 'resukisu'
-        options:
-          - 'resukisu'
-          - 'ksunext'
-          - 'ksu'
-      build_30:
-        description: '编译 6.6.30 (一加13)'
+      resukisu_enable:
+        description: '【板块1】ReSukiSU (勾选后启用下方6.6.30-6.6.118编译)'
         type: boolean
         default: false
-      build_50:
-        description: '编译 6.6.50 天玑特供 (一加Ace5 Ultra)'
+      resukisu_30:
+        description: 'ReSukiSU - 6.6.30'
         type: boolean
         default: false
-      build_56:
-        description: '编译 6.6.56 (一加13t)'
+      resukisu_50:
+        description: 'ReSukiSU - 6.6.50'
         type: boolean
         default: false
-      build_57:
-        description: '编译 6.6.57 (一加Pad 2 Pro)'
+      resukisu_56:
+        description: 'ReSukiSU - 6.6.56'
         type: boolean
         default: false
-      build_66:
-        description: '编译 6.6.66 (一加13)'
+      resukisu_57:
+        description: 'ReSukiSU - 6.6.57'
         type: boolean
         default: false
-      build_89:
-        description: '编译 6.6.89 (一加13)'
+      resukisu_66:
+        description: 'ReSukiSU - 6.6.66'
         type: boolean
         default: false
-      build_89_mtk:
-        description: '编译 6.6.89 天玑特供 (一加Ace5 Ultra)'
+      resukisu_89:
+        description: 'ReSukiSU - 6.6.89'
         type: boolean
         default: false
-      build_118:
-        description: '编译 6.6.118 (一加13)'
+      resukisu_89_mtk:
+        description: 'ReSukiSU - 6.6.89 MTK'
+        type: boolean
+        default: false
+      resukisu_118:
+        description: 'ReSukiSU - 6.6.118'
+        type: boolean
+        default: false
+      ksunext_enable:
+        description: '【板块2】KernelSU-Next (勾选后启用下方6.6.30-6.6.118编译)'
+        type: boolean
+        default: false
+      ksunext_30:
+        description: 'KernelSU-Next - 6.6.30'
+        type: boolean
+        default: false
+      ksunext_50:
+        description: 'KernelSU-Next - 6.6.50'
+        type: boolean
+        default: false
+      ksunext_56:
+        description: 'KernelSU-Next - 6.6.56'
+        type: boolean
+        default: false
+      ksunext_57:
+        description: 'KernelSU-Next - 6.6.57'
+        type: boolean
+        default: false
+      ksunext_66:
+        description: 'KernelSU-Next - 6.6.66'
+        type: boolean
+        default: false
+      ksunext_89:
+        description: 'KernelSU-Next - 6.6.89'
+        type: boolean
+        default: false
+      ksunext_89_mtk:
+        description: 'KernelSU-Next - 6.6.89 MTK'
+        type: boolean
+        default: false
+      ksunext_118:
+        description: 'KernelSU-Next - 6.6.118'
+        type: boolean
+        default: false
+      ksu_enable:
+        description: '【板块3】KernelSU (勾选后启用下方6.6.30-6.6.118编译)'
+        type: boolean
+        default: false
+      ksu_30:
+        description: 'KSU - 6.6.30'
+        type: boolean
+        default: false
+      ksu_50:
+        description: 'KSU - 6.6.50'
+        type: boolean
+        default: false
+      ksu_56:
+        description: 'KSU - 6.6.56'
+        type: boolean
+        default: false
+      ksu_57:
+        description: 'KSU - 6.6.57'
+        type: boolean
+        default: false
+      ksu_66:
+        description: 'KSU - 6.6.66'
+        type: boolean
+        default: false
+      ksu_89:
+        description: 'KSU - 6.6.89'
+        type: boolean
+        default: false
+      ksu_89_mtk:
+        description: 'KSU - 6.6.89 MTK'
+        type: boolean
+        default: false
+      ksu_118:
+        description: 'KSU - 6.6.118'
         type: boolean
         default: false
 
@@ -61,29 +128,42 @@ jobs:
         id: matrix
         run: |
           VERSIONS=()
-          if [ "${{ inputs.build_30 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.30","sub_version":"30","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_v_15.0.0_oneplus_13","source_archive":"oneplus-sm8750_v_15.0.0_oneplus_13","ccache_key":"ccache-ecsv4-6.6.30","ccache_sub":"6.6.30","device":"一加13","chip":"骁龙8Elite"}')
+          add_ver() {
+            local ksu="$1" sub="$2" label="$3" mtk="$4" repo="$5" branch="$6" arch="$7" ckey="$8" csub="$9" chip="${10}"
+            VERSIONS+=("{\"key\":\"${ksu}-${label}\",\"ksu_type\":\"${ksu}\",\"sub_version\":\"${sub}\",\"mtk\":\"${mtk}\",\"source_repo\":\"${repo}\",\"source_branch\":\"${branch}\",\"source_archive\":\"${arch}\",\"ccache_key\":\"${ckey}\",\"ccache_sub\":\"${csub}\",\"chip\":\"${chip}\"}")
+          }
+          # ============ 板块1: ReSukiSU (排序 30→118) ============
+          if [ "${{ inputs.resukisu_enable }}" = "true" ]; then
+            if [ "${{ inputs.resukisu_30 }}" = "true" ]; then add_ver resukisu 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
+            if [ "${{ inputs.resukisu_50 }}" = "true" ]; then add_ver resukisu 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
+            if [ "${{ inputs.resukisu_56 }}" = "true" ]; then add_ver resukisu 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
+            if [ "${{ inputs.resukisu_57 }}" = "true" ]; then add_ver resukisu 57 6.6.57 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.1_pad_2_pro oneplus-sm8750_v_15.0.1_pad_2_pro ccache-ecsv4-6.6.57 6.6.57 骁龙8Elite; fi
+            if [ "${{ inputs.resukisu_66 }}" = "true" ]; then add_ver resukisu 66 6.6.66 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13_6.6.66 oneplus-sm8750_v_15.0.2_oneplus_13_6.6.66 ccache-ecsv4-6.6.66 6.6.66 骁龙8Elite; fi
+            if [ "${{ inputs.resukisu_89 }}" = "true" ]; then add_ver resukisu 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
+            if [ "${{ inputs.resukisu_89_mtk }}" = "true" ]; then add_ver resukisu 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
+            if [ "${{ inputs.resukisu_118 }}" = "true" ]; then add_ver resukisu 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
           fi
-          if [ "${{ inputs.build_50 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.50","sub_version":"50","mtk":"true","source_repo":"android_kernel_oneplus_mt6991","source_branch":"oneplus/mt6991_v_15.0.2_ace5_ultra","source_archive":"oneplus-mt6991_v_15.0.2_ace5_ultra","ccache_key":"ccache-ecsv4-6.6.50","ccache_sub":"6.6.50","device":"一加Ace5 Ultra","chip":"天玑9400+"}')
+          # ============ 板块2: KernelSU-Next (排序 30→118) ============
+          if [ "${{ inputs.ksunext_enable }}" = "true" ]; then
+            if [ "${{ inputs.ksunext_30 }}" = "true" ]; then add_ver ksunext 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
+            if [ "${{ inputs.ksunext_50 }}" = "true" ]; then add_ver ksunext 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
+            if [ "${{ inputs.ksunext_56 }}" = "true" ]; then add_ver ksunext 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
+            if [ "${{ inputs.ksunext_57 }}" = "true" ]; then add_ver ksunext 57 6.6.57 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.1_pad_2_pro oneplus-sm8750_v_15.0.1_pad_2_pro ccache-ecsv4-6.6.57 6.6.57 骁龙8Elite; fi
+            if [ "${{ inputs.ksunext_66 }}" = "true" ]; then add_ver ksunext 66 6.6.66 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13_6.6.66 oneplus-sm8750_v_15.0.2_oneplus_13_6.6.66 ccache-ecsv4-6.6.66 6.6.66 骁龙8Elite; fi
+            if [ "${{ inputs.ksunext_89 }}" = "true" ]; then add_ver ksunext 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
+            if [ "${{ inputs.ksunext_89_mtk }}" = "true" ]; then add_ver ksunext 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
+            if [ "${{ inputs.ksunext_118 }}" = "true" ]; then add_ver ksunext 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
           fi
-          if [ "${{ inputs.build_56 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.56","sub_version":"56","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_v_15.0.2_oneplus_13t","source_archive":"oneplus-sm8750_v_15.0.2_oneplus_13t","ccache_key":"ccache-ecsv4-6.6.56","ccache_sub":"6.6.56","device":"一加13t","chip":"骁龙8Elite"}')
-          fi
-          if [ "${{ inputs.build_57 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.57","sub_version":"57","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_v_15.0.1_pad_2_pro","source_archive":"oneplus-sm8750_v_15.0.1_pad_2_pro","ccache_key":"ccache-ecsv4-6.6.57","ccache_sub":"6.6.57","device":"一加Pad 2 Pro","chip":"骁龙8Elite"}')
-          fi
-          if [ "${{ inputs.build_66 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.66","sub_version":"66","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_v_15.0.2_oneplus_13_6.6.66","source_archive":"oneplus-sm8750_v_15.0.2_oneplus_13_6.6.66","ccache_key":"ccache-ecsv4-6.6.66","ccache_sub":"6.6.66","device":"一加13","chip":"骁龙8Elite"}')
-          fi
-          if [ "${{ inputs.build_89 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.89","sub_version":"89","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89","source_archive":"oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89","ccache_key":"ccache-ecsv4-6.6.89","ccache_sub":"6.6.89","device":"一加13","chip":"骁龙8Elite"}')
-          fi
-          if [ "${{ inputs.build_89_mtk }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.89_mtk","sub_version":"89","mtk":"true","source_repo":"android_kernel_oneplus_mt6991","source_branch":"oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89","source_archive":"oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89","ccache_key":"ccache-ecsv4-mtk_6.6.89","ccache_sub":"mtk_6.6.89","device":"一加Ace5 Ultra","chip":"天玑9400+"}')
-          fi
-          if [ "${{ inputs.build_118 }}" = "true" ]; then
-            VERSIONS+=('{"key":"6.6.118","sub_version":"118","mtk":"false","source_repo":"android_kernel_common_oneplus_sm8750","source_branch":"oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118","source_archive":"oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118","ccache_key":"ccache-ecsv4-6.6.118","ccache_sub":"6.6.118","device":"一加13","chip":"骁龙8Elite"}')
+          # ============ 板块3: KernelSU (排序 30→118) ============
+          if [ "${{ inputs.ksu_enable }}" = "true" ]; then
+            if [ "${{ inputs.ksu_30 }}" = "true" ]; then add_ver ksu 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
+            if [ "${{ inputs.ksu_50 }}" = "true" ]; then add_ver ksu 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
+            if [ "${{ inputs.ksu_56 }}" = "true" ]; then add_ver ksu 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
+            if [ "${{ inputs.ksu_57 }}" = "true" ]; then add_ver ksu 57 6.6.57 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.1_pad_2_pro oneplus-sm8750_v_15.0.1_pad_2_pro ccache-ecsv4-6.6.57 6.6.57 骁龙8Elite; fi
+            if [ "${{ inputs.ksu_66 }}" = "true" ]; then add_ver ksu 66 6.6.66 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13_6.6.66 oneplus-sm8750_v_15.0.2_oneplus_13_6.6.66 ccache-ecsv4-6.6.66 6.6.66 骁龙8Elite; fi
+            if [ "${{ inputs.ksu_89 }}" = "true" ]; then add_ver ksu 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
+            if [ "${{ inputs.ksu_89_mtk }}" = "true" ]; then add_ver ksu 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
+            if [ "${{ inputs.ksu_118 }}" = "true" ]; then add_ver ksu 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
           fi
           echo "include=$(echo "${VERSIONS[@]}" | jq -s -c .)" >> $GITHUB_OUTPUT
 
@@ -209,7 +289,7 @@ jobs:
         id: ksu_version
         run: |
           cd kernel_workspace
-          if [[ "${{ inputs.ksu_type }}" == "resukisu" ]]; then
+          if [[ "${{ matrix.ksu_type }}" == "resukisu" ]]; then
             echo "正在配置ReSukiSU..."
             curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/refs/heads/main/kernel/setup.sh" | bash -s main
             echo 'CONFIG_KSU_FULL_NAME_FORMAT="%TAG_NAME%-%COMMIT_SHA%@cctv18"' >> ./common/arch/arm64/configs/gki_defconfig
@@ -217,7 +297,7 @@ jobs:
             KSU_VERSION=$(expr $(git rev-list --count main) + 30700 2>/dev/null || echo 114514)
             echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
             echo "ksuver=$KSU_VERSION" >> $GITHUB_OUTPUT
-          elif [[ "${{ inputs.ksu_type }}" == "ksunext" ]]; then
+          elif [[ "${{ matrix.ksu_type }}" == "ksunext" ]]; then
             echo "正在配置KernelSU Next..."
             curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/refs/heads/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
             cd KernelSU-Next
@@ -231,7 +311,7 @@ jobs:
             cd ../common/drivers/kernelsu
             wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/apk_sign.patch
             patch -p2 -N -F 3 < apk_sign.patch || true
-          elif [[ "${{ inputs.ksu_type }}" == "ksu" ]]; then
+          elif [[ "${{ matrix.ksu_type }}" == "ksu" ]]; then
             echo "正在配置原版 KernelSU (tiann/KernelSU)..."
             curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/refs/heads/main/kernel/setup.sh" | bash -s main
             cd ./KernelSU
@@ -244,23 +324,21 @@ jobs:
       - name: 应用 KernelSU & SUSFS 补丁
         run: |
           cd kernel_workspace
-          if [[ "${{ inputs.ksu_type }}" != "none" ]]; then
-            echo "正在添加susfs补丁..."
-            git clone --depth=1 https://github.com/cctv18/susfs4oki.git susfs4ksu -b oki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}
-            wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/69_hide_stuff.patch -O ./common/69_hide_stuff.patch
-            cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch ./common/
-            cp ./susfs4ksu/kernel_patches/fs/* ./common/fs/
-            cp ./susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
-            cd ./common
-            patch -p1 < 50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch || true
-            patch -p1 -N -F 3 < 69_hide_stuff.patch || true
-            cd ..
-            if [[ "${{ inputs.ksu_type }}" == "ksu" ]]; then
-              echo "正在为原版 KernelSU 添加SUSFS补丁..."
-              cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU/
-              cd ./KernelSU
-              patch -p1 < 10_enable_susfs_for_ksu.patch || true
-            fi
+          echo "正在添加susfs补丁..."
+          git clone --depth=1 https://github.com/cctv18/susfs4oki.git susfs4ksu -b oki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}
+          wget https://github.com/$GITHUB_REPOSITORY/raw/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/other_patch/69_hide_stuff.patch -O ./common/69_hide_stuff.patch
+          cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch ./common/
+          cp ./susfs4ksu/kernel_patches/fs/* ./common/fs/
+          cp ./susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
+          cd ./common
+          patch -p1 < 50_add_susfs_in_gki-${{ env.ANDROID_VERSION }}-${{ env.KERNEL_VERSION }}.patch || true
+          patch -p1 -N -F 3 < 69_hide_stuff.patch || true
+          cd ..
+          if [[ "${{ matrix.ksu_type }}" == "ksu" ]]; then
+            echo "正在为原版 KernelSU 添加SUSFS补丁..."
+            cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU/
+            cd ./KernelSU
+            patch -p1 < 10_enable_susfs_for_ksu.patch || true
           fi
 
       - name: 应用lz4 1.10.0 & zstd 1.5.7补丁
@@ -520,11 +598,10 @@ jobs:
             exit 1
           fi
 
-          case "${{ inputs.ksu_type }}" in
+          case "${{ matrix.ksu_type }}" in
             resukisu) KSU_TYPENAME="ReSukiSU"; KSU_SHORT="RESUKI" ;;
-            ksunext)  KSU_TYPENAME="KSUNext"; KSU_SHORT="KSUNext" ;;
+            ksunext)  KSU_TYPENAME="KernelSU-Next"; KSU_SHORT="KSUNext" ;;
             ksu)      KSU_TYPENAME="KSU"; KSU_SHORT="KSU" ;;
-            *)        KSU_TYPENAME="none"; KSU_SHORT="none" ;;
           esac
 
           wget https://raw.githubusercontent.com/$GITHUB_REPOSITORY/refs/heads/$GITHUB_REF_NAME/6.6-Dependency/zram.zip
@@ -568,7 +645,6 @@ jobs:
         with:
           name: kernel-${{ matrix.key }}
           path: ${{ github.workspace }}/kernel_workspace/AK3_*.zip
-          
 
   release:
     needs: [setup, build]
@@ -601,15 +677,9 @@ jobs:
             find release_zips -name 'AK3_*.zip' -type f
           fi
 
-      - name: 计算 KSU 名称
+      - name: 计算发布环境变量
         if: steps.check.outputs.zip_count != '0'
         run: |
-          case "${{ inputs.ksu_type }}" in
-            resukisu) echo "KSU_TYPENAME=ReSukiSU" >> $GITHUB_ENV ;;
-            ksunext)  echo "KSU_TYPENAME=KernelSU Next" >> $GITHUB_ENV ;;
-            ksu)      echo "KSU_TYPENAME=KSU" >> $GITHUB_ENV ;;
-            *)        echo "KSU_TYPENAME=unknown" >> $GITHUB_ENV ;;
-          esac
           TIME="$(TZ='Asia/Shanghai' date +'%y%m%d%H%M%S')"
           TIME_FORM="$(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M:%S')"
           echo "TIME=$TIME" >> $GITHUB_ENV
@@ -626,18 +696,29 @@ jobs:
           echo '${{ needs.setup.outputs.include }}' > matrix.json
 
           cat << 'RELEASE_HEAD' > release_notes.md
-          ### 欧加真 ${{ env.KSU_TYPENAME }} 通用内核 | 批量构建信息
+          ### 欧加真OKI通用内核 | 批量构建信息
 
-          | 内核版本 | 机型 | 芯片 | KSU版本 |
-          |---------|------|------|---------|
+          | 内核版本 | 芯片 | KSU分支 |
+          |---------|------|---------|
           RELEASE_HEAD
 
-          cat matrix.json | jq -r '.[] | "| \(.key) | \(.device) | \(.chip) | ${{ env.KSU_TYPENAME }} (${{ inputs.ksu_type }}) |"' >> release_notes.md
+          while IFS= read -r item; do
+            key=$(echo "$item" | jq -r '.key')
+            chip=$(echo "$item" | jq -r '.chip')
+            ksu=$(echo "$item" | jq -r '.ksu_type')
+            case "$ksu" in
+              resukisu) ksu_name="ReSukiSU" ;;
+              ksunext)  ksu_name="KernelSU-Next" ;;
+              ksu)      ksu_name="KSU" ;;
+              *)        ksu_name="$ksu" ;;
+            esac
+            echo "| $key | $chip | $ksu_name |" >> release_notes.md
+          done < <(cat matrix.json | jq -c '.[]')
 
           cat << 'RELEASE_BODY' >> release_notes.md
 
           - 编译时间: ${{ env.TIME_FORM }}
-          - KSU分支：${{ env.KSU_TYPENAME }}
+          - KSU分支：ReSukiSU / KernelSU-Next / KSU 多分支批量
           - susfs支持：true
           - KPM支持 ：true
           - LZ4支持：true
@@ -653,7 +734,7 @@ jobs:
           - KSU原版管理器下载：[KernelSU](https://github.com/tiann/KernelSU/releases)
 
           ### 更新内容：
-          - 更新${{ env.KSU_TYPENAME }}至最新版本
+          - 更新全部KSU分支至最新版本
           - 批量编译欧加真SM8750/MT6991全版本内核
 
           ### 安装方法 | Installation Guide
