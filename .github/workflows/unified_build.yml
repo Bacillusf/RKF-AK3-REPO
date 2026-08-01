@@ -9,12 +9,8 @@ env:
 on:
   workflow_dispatch:
     inputs:
-      resukisu_enable:
-        description: '【板块1】ReSukiSU (勾选后启用下方6.6.30-6.6.118编译)'
-        type: boolean
-        default: false
       resukisu_30:
-        description: 'ReSukiSU - 6.6.30'
+        description: '【板块1】ReSukiSU - 6.6.30'
         type: boolean
         default: false
       resukisu_50:
@@ -45,12 +41,8 @@ on:
         description: 'ReSukiSU - 6.6.118'
         type: boolean
         default: false
-      ksunext_enable:
-        description: '【板块2】KernelSU-Next (勾选后启用下方6.6.30-6.6.118编译)'
-        type: boolean
-        default: false
       ksunext_30:
-        description: 'KernelSU-Next - 6.6.30'
+        description: '【板块2】KernelSU-Next - 6.6.30'
         type: boolean
         default: false
       ksunext_50:
@@ -81,12 +73,8 @@ on:
         description: 'KernelSU-Next - 6.6.118'
         type: boolean
         default: false
-      ksu_enable:
-        description: '【板块3】KernelSU (勾选后启用下方6.6.30-6.6.118编译)'
-        type: boolean
-        default: false
       ksu_30:
-        description: 'KSU - 6.6.30'
+        description: '【板块3】KSU - 6.6.30'
         type: boolean
         default: false
       ksu_50:
@@ -133,7 +121,6 @@ jobs:
             VERSIONS+=("{\"key\":\"${ksu}-${label}\",\"ksu_type\":\"${ksu}\",\"sub_version\":\"${sub}\",\"mtk\":\"${mtk}\",\"source_repo\":\"${repo}\",\"source_branch\":\"${branch}\",\"source_archive\":\"${arch}\",\"ccache_key\":\"${ckey}\",\"ccache_sub\":\"${csub}\",\"chip\":\"${chip}\"}")
           }
           # ============ 板块1: ReSukiSU (排序 30→118) ============
-          if [ "${{ inputs.resukisu_enable }}" = "true" ]; then
             if [ "${{ inputs.resukisu_30 }}" = "true" ]; then add_ver resukisu 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
             if [ "${{ inputs.resukisu_50 }}" = "true" ]; then add_ver resukisu 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
             if [ "${{ inputs.resukisu_56 }}" = "true" ]; then add_ver resukisu 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
@@ -142,9 +129,7 @@ jobs:
             if [ "${{ inputs.resukisu_89 }}" = "true" ]; then add_ver resukisu 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
             if [ "${{ inputs.resukisu_89_mtk }}" = "true" ]; then add_ver resukisu 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
             if [ "${{ inputs.resukisu_118 }}" = "true" ]; then add_ver resukisu 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
-          fi
           # ============ 板块2: KernelSU-Next (排序 30→118) ============
-          if [ "${{ inputs.ksunext_enable }}" = "true" ]; then
             if [ "${{ inputs.ksunext_30 }}" = "true" ]; then add_ver ksunext 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
             if [ "${{ inputs.ksunext_50 }}" = "true" ]; then add_ver ksunext 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
             if [ "${{ inputs.ksunext_56 }}" = "true" ]; then add_ver ksunext 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
@@ -153,9 +138,7 @@ jobs:
             if [ "${{ inputs.ksunext_89 }}" = "true" ]; then add_ver ksunext 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
             if [ "${{ inputs.ksunext_89_mtk }}" = "true" ]; then add_ver ksunext 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
             if [ "${{ inputs.ksunext_118 }}" = "true" ]; then add_ver ksunext 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
-          fi
           # ============ 板块3: KernelSU (排序 30→118) ============
-          if [ "${{ inputs.ksu_enable }}" = "true" ]; then
             if [ "${{ inputs.ksu_30 }}" = "true" ]; then add_ver ksu 30 6.6.30 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.0_oneplus_13 oneplus-sm8750_v_15.0.0_oneplus_13 ccache-ecsv4-6.6.30 6.6.30 骁龙8Elite; fi
             if [ "${{ inputs.ksu_50 }}" = "true" ]; then add_ver ksu 50 6.6.50 true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra oneplus-mt6991_v_15.0.2_ace5_ultra ccache-ecsv4-6.6.50 6.6.50 天玑9400+; fi
             if [ "${{ inputs.ksu_56 }}" = "true" ]; then add_ver ksu 56 6.6.56 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_15.0.2_oneplus_13t oneplus-sm8750_v_15.0.2_oneplus_13t ccache-ecsv4-6.6.56 6.6.56 骁龙8Elite; fi
@@ -164,7 +147,6 @@ jobs:
             if [ "${{ inputs.ksu_89 }}" = "true" ]; then add_ver ksu 89 6.6.89 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_v_16.0.0_oneplus_13_6.6.89 oneplus-sm8750_v_16.0.0_oneplus_13_6.6.89 ccache-ecsv4-6.6.89 6.6.89 骁龙8Elite; fi
             if [ "${{ inputs.ksu_89_mtk }}" = "true" ]; then add_ver ksu 89 6.6.89_mtk true android_kernel_oneplus_mt6991 oneplus/mt6991_v_15.0.2_ace5_ultra_6.6.89 oneplus-mt6991_v_15.0.2_ace5_ultra_6.6.89 ccache-ecsv4-mtk_6.6.89 mtk_6.6.89 天玑9400+; fi
             if [ "${{ inputs.ksu_118 }}" = "true" ]; then add_ver ksu 118 6.6.118 false android_kernel_common_oneplus_sm8750 oneplus/sm8750_b_16.0.0_oneplus_13_6.6.118 oneplus-sm8750_b_16.0.0_oneplus_13_6.6.118 ccache-ecsv4-6.6.118 6.6.118 骁龙8Elite; fi
-          fi
           echo "include=$(echo "${VERSIONS[@]}" | jq -s -c .)" >> $GITHUB_OUTPUT
 
   build:
