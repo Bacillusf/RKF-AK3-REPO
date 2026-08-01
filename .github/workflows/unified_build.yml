@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       resukisu_30:
-        description: '【板块1】ReSukiSU - 6.6.30'
+        description: 'ReSukiSU - 6.6.30'
         type: boolean
         default: false
       resukisu_50:
@@ -42,7 +42,7 @@ on:
         type: boolean
         default: false
       ksunext_30:
-        description: '【板块2】KernelSU-Next - 6.6.30'
+        description: 'KernelSU-Next - 6.6.30'
         type: boolean
         default: false
       ksunext_50:
@@ -74,7 +74,7 @@ on:
         type: boolean
         default: false
       ksu_30:
-        description: '【板块3】KSU - 6.6.30'
+        description: 'KSU - 6.6.30'
         type: boolean
         default: false
       ksu_50:
