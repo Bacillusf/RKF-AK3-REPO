@@ -10,6 +10,7 @@
 1. 本仓库主要为 [RKF](https://github.com/Bacillusf/ReKernelFlasher) 软件的云 GKI 功能提供资源支持。
 2. 本仓库使用 [cctv18](https://github.com/cctv18)&[Numbersf](https://github.com/Numbersf) 作者的 GitHub Actions 工作流进行编译，提供[ReSukiSU](https://github.com/ReSukiSU/ReSukiSU) [KernelSU-Next](https://github.com/KernelSU-Next/KernelSU-Next/) [KernelSU](https://github.com/tiann/KernelSU) [SukiSU](https://github.com/SukiSU-Ultra/SukiSU-Ultra) 所对应的欧加真AnyKernel3包
 3. 刷入规则:***只要内核版本相同就可以刷入***，不需要注意编译时/Realease中提示的机型，其中展示的机型是说明源码所采用的机型，高通机型选择内核版本相同且不带有`MTK`标识的包，天玑机型则选择内核版本相同带有`MTK`标识的包。(**请注意，如果命名中出现了机型信息如ONEP13(一加13)，这表明此AK3包不可通用，请严格按照机型刷入**)
+
 4.**Release命名**:OORB-6.6为例，`OORB`为`OPPO-ONEPLUS-Realme-Build`缩写，后方为内核大版本
 
 ## 注意
