@@ -129,7 +129,6 @@ jobs:
     if: needs.setup.outputs.include != '[]'
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.setup.outputs.include) }}
