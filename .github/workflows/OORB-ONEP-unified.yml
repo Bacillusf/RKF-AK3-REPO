@@ -1461,17 +1461,12 @@ jobs:
       - name: Package AnyKernel3
         id: package
         run: |
-          if [[ "$CPU" == mt* ]]; then
-            MTK_MARK="MTK_"
-          else
-            MTK_MARK=""
-          fi
           CONFIG="SUSFS_KPM_BBG_IN_FIX"
           if [ "${{ matrix.hmbird }}" = "true" ]; then
             CONFIG="${CONFIG}_HMBRID"
           fi
           CONFIG="${CONFIG}_DS"
-          AK3_NAME="AK3_SUKISU_${MTK_MARK}${KSUVER}_${CONFIG}.zip"
+          AK3_NAME="AK3_SUKISU_${{ matrix.onep }}_${KSUVER}_${CONFIG}.zip"
           cd "${GITHUB_WORKSPACE}/AnyKernel3"
           zip -r "../${AK3_NAME}" ./*
           echo "AK3_NAME=${AK3_NAME}" >> "$GITHUB_OUTPUT"
