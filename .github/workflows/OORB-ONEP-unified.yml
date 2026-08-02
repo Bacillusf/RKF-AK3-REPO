@@ -26,68 +26,69 @@ jobs:
           DEVICES=()
           add_dev() {
             local file="$1"
+            local hmbird="$2"
             local onep
             onep=$(echo "$file" | sed -E 's/_b$//; s/_//g; s/^oneplus/ONEP/' | tr 'a-z' 'A-Z')
-            DEVICES+=("{\"file\":\"${file}\",\"onep\":\"${onep}\"}")
+            DEVICES+=("{\"file\":\"${file}\",\"onep\":\"${onep}\",\"hmbird\":\"${hmbird}\"}")
           }
           if [ "${{ inputs.test_oneplus13 }}" = "true" ]; then
-            add_dev oneplus_13_b
+            add_dev oneplus_13_b true
           else
-            add_dev oneplus_nord_n30_se_5g_v
-            add_dev oneplus_10r_v
-            add_dev oneplus_nord_3_b
-            add_dev oneplus_ace_v
-            add_dev oneplus_ace_race_v
-            add_dev oneplus_10_pro_b
-            add_dev oneplus_10t_v
-            add_dev oneplus_11r_b
-            add_dev oneplus_ace2_b
-            add_dev oneplus_pad_lite_b
-            add_dev oneplus_pad_mt6983_b
-            add_dev oneplus_ace_2v_b
-            add_dev oneplus_ace_pro_v
-            add_dev oneplus_11_b
-            add_dev oneplus_12r_b
-            add_dev oneplus_ace2_pro_b
-            add_dev oneplus_ace3_b
-            add_dev oneplus_open_b
-            add_dev oneplus_nord_ce4_b
-            add_dev oneplus_n6_b
-            add_dev oneplus_12_b
-            add_dev oneplus_pad_go_2_b
-            add_dev oneplus_turbo_6x_b
-            add_dev oneplus_nord_ce4_lite_5g_b
-            add_dev oneplus_nord_ce6_lite_b
-            add_dev oneplus_turbo_6v
-            add_dev oneplus_nord_4_b
-            add_dev oneplus_ace_3v_b
-            add_dev oneplus_pad_mt6897_b
-            add_dev oneplus_13r_b
-            add_dev oneplus_ace3_pro_b
-            add_dev oneplus_ace5_b
-            add_dev oneplus_pad_pro_b
-            add_dev oneplus_pad2_b
-            add_dev oneplus_nord_ce5_b
-            add_dev oneplus_nord_5_b
-            add_dev oneplus_ace5_pro_b
-            add_dev oneplus_13_b
-            add_dev oneplus_13t_b
-            add_dev oneplus_13s_b
-            add_dev oneplus_pad_2_pro_b
-            add_dev oneplus_pad_3_b
-            add_dev oneplus_ace5_race_b
-            add_dev oneplus_ace5_ultra_b
-            add_dev oneplus_pad2_mt6991_b
-            add_dev oneplus_ace_6
-            add_dev oneplus_turbo_6
-            add_dev oneplus_nord_6
-            add_dev oneplus_ace_6t
-            add_dev oneplus_15r
-            add_dev oneplus_15
-            add_dev oneplus_15t
-            add_dev oneplus_pad_3_pro
-            add_dev oneplus_pad_4
-            add_dev oneplus_ace6_ultra
+            add_dev oneplus_nord_n30_se_5g_v false
+            add_dev oneplus_10r_v false
+            add_dev oneplus_nord_3_b false
+            add_dev oneplus_ace_v false
+            add_dev oneplus_ace_race_v false
+            add_dev oneplus_10_pro_b false
+            add_dev oneplus_10t_v false
+            add_dev oneplus_11r_b false
+            add_dev oneplus_ace2_b false
+            add_dev oneplus_pad_lite_b false
+            add_dev oneplus_pad_mt6983_b false
+            add_dev oneplus_ace_2v_b false
+            add_dev oneplus_ace_pro_v false
+            add_dev oneplus_11_b false
+            add_dev oneplus_12r_b false
+            add_dev oneplus_ace2_pro_b false
+            add_dev oneplus_ace3_b false
+            add_dev oneplus_open_b false
+            add_dev oneplus_nord_ce4_b false
+            add_dev oneplus_n6_b false
+            add_dev oneplus_12_b false
+            add_dev oneplus_pad_go_2_b false
+            add_dev oneplus_turbo_6x_b false
+            add_dev oneplus_nord_ce4_lite_5g_b false
+            add_dev oneplus_nord_ce6_lite_b false
+            add_dev oneplus_turbo_6v false
+            add_dev oneplus_nord_4_b false
+            add_dev oneplus_ace_3v_b false
+            add_dev oneplus_pad_mt6897_b false
+            add_dev oneplus_13r_b false
+            add_dev oneplus_ace3_pro_b false
+            add_dev oneplus_ace5_b false
+            add_dev oneplus_pad_pro_b false
+            add_dev oneplus_pad2_b false
+            add_dev oneplus_nord_ce5_b false
+            add_dev oneplus_nord_5_b false
+            add_dev oneplus_ace5_pro_b false
+            add_dev oneplus_13_b true
+            add_dev oneplus_13t_b true
+            add_dev oneplus_13s_b true
+            add_dev oneplus_pad_2_pro_b true
+            add_dev oneplus_pad_3_b true
+            add_dev oneplus_ace5_race_b false
+            add_dev oneplus_ace5_ultra_b false
+            add_dev oneplus_pad2_mt6991_b true
+            add_dev oneplus_ace_6 true
+            add_dev oneplus_turbo_6 true
+            add_dev oneplus_nord_6 true
+            add_dev oneplus_ace_6t false
+            add_dev oneplus_15r false
+            add_dev oneplus_15 false
+            add_dev oneplus_15t false
+            add_dev oneplus_pad_3_pro false
+            add_dev oneplus_pad_4 false
+            add_dev oneplus_ace6_ultra false
           fi
           echo "include=$(echo "${DEVICES[@]}" | jq -s -c .)" >> $GITHUB_OUTPUT
 
@@ -122,7 +123,6 @@ jobs:
       NETFILTER: 'true'
       CCM: 'false'
       UNICODE_BYPASS: 'true'
-      SCHED_HMBIRD: 'true'
       DROID_SPACES: 'true'
       RE_KERNEL: 'false'
       SUSFS_DEV: 'false'
@@ -289,7 +289,7 @@ jobs:
           echo "Selected CCM: ${{ env.CCM }}"
           echo "Selected SUSFS_DEV: ${{ env.SUSFS_DEV }}"
           echo "Selected FAST_BUILD: ${{ env.FAST_BUILD }}"
-          echo "Selected SCHED_HMBIRD: ${{ env.SCHED_HMBIRD }}"
+          echo "Selected SCHED_HMBIRD: ${{ matrix.hmbird }}"
           echo "Selected UNICODE_BYPASS: ${{ env.UNICODE_BYPASS }}"
           echo "Selected DROID_SPACES: ${{ env.DROID_SPACES }}"
           echo "Selected RE_KERNEL: ${{ env.RE_KERNEL }}"
@@ -743,7 +743,7 @@ jobs:
 
       # OGKI转换GKI，无需修改 dtbo 开机
       - name: Apply Convert HMBIRD_OGKI to HMBIRD_GKI
-        if: ${{ (fromJSON(env.VERSIONLEVEL) > 6 || (fromJSON(env.VERSIONLEVEL) == 6 && fromJSON(env.PATCHLEVEL) >= 6)) && env.SCHED_HMBIRD == 'false' }}
+        if: ${{ (fromJSON(env.VERSIONLEVEL) > 6 || (fromJSON(env.VERSIONLEVEL) == 6 && fromJSON(env.PATCHLEVEL) >= 6)) && matrix.hmbird == 'false' }}
         run: |
           PATCH_DIR="${GITHUB_WORKSPACE}/kernel_workspace/Action-Build/patches"
           cd kernel_workspace/kernel_platform/common
@@ -898,7 +898,7 @@ jobs:
       - name: Apply SCHED_HMBIRD
         env:
           FILE: ${{ matrix.file }}
-        if: ${{ env.SCHED_HMBIRD == 'true' }}
+        if: ${{ matrix.hmbird == 'true' }}
         run: |
           cd kernel_workspace/kernel_platform/common
           CLEAN_FILE="${FILE//_bak/}"
@@ -1459,15 +1459,20 @@ jobs:
           curl -fL -H "Authorization: token $GITHUB_TOKEN" -o "${MANAGER_ARTIFACT}.zip" "$artifact_url"
           unzip -j "${MANAGER_ARTIFACT}.zip" "*.apk" -d ./AnyKernel3/
 
-      - name: Set zip Suffix
-        id: suffix
-        run: |
-          echo "value=${{ env.ZRAM_ALGO_U && format('_{0}', env.ZRAM_ALGO_U) || '' }}${{ env.KPM == 'KPM' && '_KPM' || env.KPM == 'KPN' && '_KPN' || '' }}${{ env.LSM_BBG == 'true' && '_BBG' || '' }}_ILH${{ env.SCHED_HMBIRD== 'true' && '_HMBIRD' || '' }}${{ env.DROID_SPACES== 'true' && '_DS' || '' }}${{ env.RE_KERNEL == 'true' && '_REKER' || '' }}${{ env.LZ4_UPDATE == 'true' && '_LZ4UPD' || '' }}" >> $GITHUB_OUTPUT
-
       - name: Package AnyKernel3
         id: package
         run: |
-          AK3_NAME="AK3_SUKISU_${{ matrix.onep }}_SUSFS_KPM_BBG_IN_FIX_HMBRID_DS.zip"
+          if [[ "$CPU" == mt* ]]; then
+            MTK_MARK="MTK_"
+          else
+            MTK_MARK=""
+          fi
+          CONFIG="SUSFS_KPM_BBG_IN_FIX"
+          if [ "${{ matrix.hmbird }}" = "true" ]; then
+            CONFIG="${CONFIG}_HMBRID"
+          fi
+          CONFIG="${CONFIG}_DS"
+          AK3_NAME="AK3_SUKISU_${MTK_MARK}${KSUVER}_${CONFIG}.zip"
           cd "${GITHUB_WORKSPACE}/AnyKernel3"
           zip -r "../${AK3_NAME}" ./*
           echo "AK3_NAME=${AK3_NAME}" >> "$GITHUB_OUTPUT"
@@ -1476,7 +1481,7 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v7
         with:
-          name: kernel-${{ matrix.onep }}
+          name: ${{ steps.package.outputs.AK3_NAME }}
           path: ${{ github.workspace }}/AK3_*.zip
 
       - name: Extract and Process ZRAM Module
@@ -1673,4 +1678,4 @@ jobs:
             --repo "${{ github.repository }}" \
             --title "${{ env.TAG_HEAD }}-${{ env.TIME_FORM }}" \
             --notes-file release_notes.md \
-            release_zips/*/AK3_*.zip
+            $(find release_zips -name 'AK3_*.zip' -type f)
