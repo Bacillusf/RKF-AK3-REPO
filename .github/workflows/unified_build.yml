@@ -601,7 +601,7 @@ jobs:
           else
             MTK_PREFIX=""
           fi
-          AK3_NAME="AK3_${MTK_PREFIX}${KSU_SHORT}_${DISP_VER}_SUSFS_KPN_LZ4_DS_IN_ADIOS_BBG.zip"
+          AK3_NAME="AK3_${MTK_PREFIX}${KSU_SHORT}_${DISP_VER}_${KSUVER}_SUSFS_KPN_LZ4_DS_IN_ADIOS_BBG.zip"
 
           zip -r ../$AK3_NAME ./*
           echo "ak3name=$AK3_NAME" >> $GITHUB_OUTPUT
